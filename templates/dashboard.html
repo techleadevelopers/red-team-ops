@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-crosshairs"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="active-attacks">{{ status.active_attacks or 0 }}</h3>
+                <p>Active Attacks</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="completed-attacks">{{ status.completed_attacks or 0 }}</h3>
+                <p>Completed</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="compromised-targets">{{ status.compromised_targets or 0 }}</h3>
+                <p>Compromised</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="data-exfiltrated">{{ status.data_exfiltrated or "0.0TB" }}</h3>
+                <p>Data Exfiltrated</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Learning & Intelligence Status -->
+    <div class="ai-learning-section" style="order: 1;">
+        <h2><i class="fas fa-brain"></i> AI Learning & Intelligence Status</h2>
+        <div class="ai-stats-grid">
+            <div class="ai-stat-card">
+                <div class="ai-stat-header">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>AI Attacks</h3>
+                </div>
+                <div class="ai-stat-value" id="ai-attacks">358</div>
+                <div class="ai-stat-label">Active Neural Patterns</div>
+                <div class="ai-progress">
+                    <div class="ai-progress-bar" style="width: 85%"></div>
+                </div>
+            </div>
+
+            <div class="ai-stat-card">
+                <div class="ai-stat-header">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Learning Rate</h3>
+                </div>
+                <div class="ai-stat-value" id="learning-rate">99.4%</div>
+                <div class="ai-stat-label">Model Accuracy</div>
+                <div class="ai-progress">
+                    <div class="ai-progress-bar" style="width: 99%"></div>
+                </div>
+            </div>
+
+            <div class="ai-stat-card">
+                <div class="ai-stat-header">
+                    <i class="fas fa-network-wired"></i>
+                    <h3>Neural Networks</h3>
+                </div>
+                <div class="ai-stat-value" id="neural-networks">12</div>
+                <div class="ai-stat-label">Active Networks</div>
+                <div class="ai-progress">
+                    <div class="ai-progress-bar" style="width: 75%"></div>
+                </div>
+            </div>
+
+            <div class="ai-stat-card">
+                <div class="ai-stat-header">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Auto Exploits</h3>
+                </div>
+                <div class="ai-stat-value" id="auto-exploits">47</div>
+                <div class="ai-stat-label">Generated Today</div>
+                <div class="ai-progress">
+                    <div class="ai-progress-bar" style="width: 92%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Operations Panel -->
+        <div class="ai-operations-panel">
+            <div class="ai-operation-section">
+                <h4><i class="fas fa-eye"></i> Threat Intelligence</h4>
+                <div class="ai-operation-grid">
+                    <button class="ai-operation-btn" onclick="executeAIOperation('threat-scan')">
+                        <i class="fas fa-search"></i> Threat Scan
+                    </button>
+                    <button class="ai-operation-btn" onclick="executeAIOperation('vuln-discovery')">
+                        <i class="fas fa-bug"></i> Vuln Discovery
+                    </button>
+                    <button class="ai-operation-btn" onclick="executeAIOperation('behavior-analysis')">
+                        <i class="fas fa-chart-bar"></i> Behavior Analysis
+                    </button>
+                    <button class="ai-operation-btn" onclick="executeAIOperation('pattern-recognition')">
+                        <i class="fas fa-fingerprint"></i> Pattern Recognition
+                    </button>
+                </div>
+            </div>
+
+            <div class="ai-operation-section">
+                <h4><i class="fas fa-rocket"></i> Auto Exploitation</h4>
+                <div class="ai-operation-grid">
+                    <button class="ai-operation-btn" onclick="executeAIOperation('payload-gen')">
+                        <i class="fas fa-code"></i> Payload Generator
+                    </button>
+                    <button class="ai-operation-btn" onclick="executeAIOperation('evasion-tech')">
+                        <i class="fas fa-mask"></i> Evasion Techniques
+                    </button>
+                    <button class="ai-operation-btn" onclick="executeAIOperation('neural-fuzzing')">
+                        <i class="fas fa-random"></i> Neural Fuzzing
+                    </button>
+                    <button class="ai-operation-btn" onclick="executeAIOperation('adaptive-learning')">
+                        <i class="fas fa-sync-alt"></i> Adaptive Learning
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency AI Controls -->
+        <div class="ai-emergency-controls">
+            <button class="ai-emergency-btn" onclick="emergencyAI()">
+                <i class="fas fa-exclamation-triangle"></i> EMERGENCY STOP
+            </button>
+            <div class="ai-status-indicator">
+                <span class="ai-status-dot operational"></span>
+                <span>AI STATUS: OPERATIONAL</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attack Modules Grid -->
+    <div class="modules-grid" style="order: 1;">
+        {% for module_id, module in modules.items() %}
+        <div class="module-card" data-module="{{ module_id }}">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-{{ module.icon }}"></i>
+                </div>
+                <div class="module-status status-{{ module.status }}"></div>
+            </div>
+
+            <div class="module-content">
+                <h3>{{ module.name }}</h3>
+                <div class="attack-list">
+                    {% for attack in module.attacks %}
+                    <div class="attack-item" data-attack="{{ attack }}">
+                        <span class="attack-name">{{ attack }}</span>
+                        <button class="attack-btn" onclick="executeAttack('{{ module_id }}', '{{ attack }}')">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="module-footer">
+                <button class="module-detail-btn" onclick="window.location.href='/module/{{ module_id }}'">
+                    <i class="fas fa-cog"></i> Configure
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    </div>
+
+    <!-- Activity Feed -->
+    <div class="activity-section">
+        <h2><i class="fas fa-stream"></i> Live Activity Feed</h2>
+        <div class="activity-feed" id="activity-feed">
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="activity-content">
+                    <span class="activity-text">JWT token compromised on target system</span>
+                    <span class="activity-time">12:45:32</span>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="activity-content">
+                    <span class="activity-text">Credential dump completed - 1,337 accounts</span>
+                    <span class="activity-time">12:44:18</span>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="activity-content">
+                    <span class="activity-text">SQL injection successful - database accessed</span>
+                    <span class="activity-time">12:43:05</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Attack Execution Modal -->
+<div id="attack-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-rocket"></i> Attack Execution</h3>
+            <span class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="execution-status">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="status-text">Initializing attack vector...</div>
+            </div>
+            <div class="console-output">
+                <div class="console-header">
+                    <span>CONSOLE OUTPUT</span>
+                </div>
+                <div class="console-content" id="console-output">
+                    <!-- Console output will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Real-time updates
+setInterval(updateStats, 2000);
+setInterval(addActivityItem, 5000);
+
+function updateStats() {
+    fetch('/api/status')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('active-attacks').textContent = data.active_attacks;
+            document.getElementById('completed-attacks').textContent = data.completed_attacks;
+            document.getElementById('compromised-targets').textContent = data.compromised_targets;
+            document.getElementById('data-exfiltrated').textContent = data.data_exfiltrated;
+        });
+}
+
+function executeAttack(module, attack) {
+    showAttackModal(module, attack);
+
+    fetch(`/api/execute/${module}/${attack}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                simulateAttackExecution(data);
+            }
+        });
+}
+
+function showAttackModal(module, attack) {
+    const modal = document.getElementById('attack-modal');
+    modal.style.display = 'flex';
+
+    // Reset progress
+    const progressFill = modal.querySelector('.progress-fill');
+    progressFill.style.width = '0%';
+
+    // Clear console
+    const consoleOutput = document.getElementById('console-output');
+    consoleOutput.innerHTML = '';
+
+    // Start simulation
+    simulateProgress();
+}
+
+function simulateProgress() {
+    const progressFill = document.querySelector('.progress-fill');
+    const statusText = document.querySelector('.status-text');
+    const consoleOutput = document.getElementById('console-output');
+
+    const stages = [
+        { progress: 20, status: 'Scanning target infrastructure...', console: '[INFO] Target scan initiated\n[SCAN] Ports: 22, 80, 443, 8080 detected' },
+        { progress: 40, status: 'Exploiting vulnerabilities...', console: '[EXPLOIT] JWT algorithm confusion detected\n[EXPLOIT] Attempting bypass...' },
+        { progress: 60, status: 'Escalating privileges...', console: '[SUCCESS] Authentication bypassed\n[PRIVESC] Enumerating user permissions...' },
+        { progress: 80, status: 'Extracting data...', console: '[EXTRACT] Accessing sensitive directories\n[DATA] 1.2GB of credentials found' },
+        { progress: 100, status: 'Attack completed successfully!', console: '[COMPLETE] Mission accomplished\n[EXFIL] Data uploaded to C2 server' }
+    ];
+
+    let currentStage = 0;
+
+    const interval = setInterval(() => {
+        if (currentStage < stages.length) {
+            const stage = stages[currentStage];
+            progressFill.style.width = stage.progress + '%';
+            statusText.textContent = stage.status;
+            consoleOutput.innerHTML += stage.console + '\n';
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            currentStage++;
+        } else {
+            clearInterval(interval);
+            setTimeout(() => {
+                document.getElementById('attack-modal').style.display = 'none';
+            }, 2000);
+        }
+    }, 1500);
+}
+
+function addActivityItem() {
+    const activities = [
+        'JWT token compromised on target system',
+        'Credential dump completed - 1,337 accounts',
+        'SQL injection successful - database accessed',
+        'Web3 wallet seed extracted',
+        'Active Directory golden ticket created',
+        'Browser session hijacked',
+        'Clipboard cryptocurrency address replaced',
+        'Form jacking payload deployed'
+    ];
+
+    const feed = document.getElementById('activity-feed');
+    const activity = activities[Math.floor(Math.random() * activities.length)];
+
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = `
+        <div class="activity-icon">
+            <i class="fas fa-bolt"></i>
+        </div>
+        <div class="activity-content">
+            <span class="activity-text">${activity}</span>
+            <span class="activity-time">${new Date().toLocaleTimeString()}</span>
+        </div>
+    `;
+
+    feed.insertBefore(item, feed.firstChild);
+
+    // Keep only last 10 items
+    while (feed.children.length > 10) {
+        feed.removeChild(feed.lastChild);
+    }
+}
+
+// Modal close functionality
+document.querySelector('.modal-close').onclick = function() {
+    document.getElementById('attack-modal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('attack-modal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

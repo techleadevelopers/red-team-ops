@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}APT Red Team Command Center{% endblock %}</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div id="matrix-bg"></div>
+
+    <!-- AI Sidebar Menu -->
+    <div id="ai-sidebar" class="ai-sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">RED TEAM AI</h2>
+            <div class="sidebar-status">
+                <span class="status-indicator operational"></span>
+                <span>OPERATIONAL</span>
+            </div>
+        </div>
+        <nav class="sidebar-menu"></nav>
+            <ul class="menu-items-direct">
+                <li><a href="/"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/terminal"><i class="fas fa-terminal"></i> Terminal</a></li>
+                <li><a href="/overview"><i class="fas fa-chart-line"></i> Attack Overview</a></li>
+                <li><a href="/web-attacks"><i class="fas fa-bug"></i> Web Attacks</a></li>
+                <li><a href="/ad-exploitation"><i class="fas fa-shield-alt"></i> AD Exploitation</a></li>
+                <li><a href="/credentials"><i class="fas fa-user-secret"></i> Credentials</a></li>
+                <li><a href="/data-stealers"><i class="fas fa-database"></i> Data Stealers</a></li>
+                <li><a href="/threat-intel"><i class="fas fa-eye"></i> Threat Intel</a></li>
+                <li><a href="/auto-exploits"><i class="fas fa-bolt"></i> Auto Exploits</a></li>
+                <li><a href="/payload-gen"><i class="fas fa-code"></i> Payload Gen</a></li>
+                <li><a href="/evasion"><i class="fas fa-mask"></i> Evasion</a></li>
+                <li><a href="/behavior-analysis"><i class="fas fa-chart-line"></i> Behavior Analysis</a></li>
+                <li><a href="/pattern-recognition"><i class="fas fa-fingerprint"></i> Pattern Recognition</a></li>
+                <li><a href="/adaptive-learning"><i class="fas fa-sync-alt"></i> Adaptive Learning</a></li>
+                <li><a href="/neural-fuzzing"><i class="fas fa-random"></i> Neural Fuzzing</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="ai-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="ai-attacks">247</span>
+                    <span class="stat-label">AI Attacks</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="learning-rate">98.7%</span>
+                    <span class="stat-label">Learning Rate</span>
+                </div>
+            </div>
+            <button class="ai-emergency-btn" onclick="emergencyAI()">
+                <i class="fas fa-power-off"></i> EMERGENCY STOP
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar Toggle -->
+    <button id="sidebar-toggle" class="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="nav-container">
+        <div class="nav-brand">
+            <i class="fas fa-skull-crossbones"></i>
+            <span class="brand-text">RED TEAM OPS</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <i class="fas fa-tachometer-alt"></i> Command Center
+            </a>
+            <a href="/terminal" class="nav-link {% if request.endpoint == 'terminal' %}active{% endif %}">
+                <i class="fas fa-terminal"></i> Terminal
+            </a>
+            <div class="nav-status">
+                <span class="status-indicator"></span>
+                <span class="status-text">OPERATIONAL</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Notification System -->
+    <div id="notification-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+</script>

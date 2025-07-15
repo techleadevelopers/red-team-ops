@@ -1,0 +1,292 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-icon">
+            <i class="fas fa-bug"></i>
+        </div>
+        <div class="header-content">
+            <h1>Web Attack Vectors</h1>
+            <p>Advanced web application exploitation and vulnerability assessment</p>
+        </div>
+        <div class="header-controls">
+            <button class="primary-btn" onclick="startAutomatedScan()">
+                <i class="fas fa-play"></i> Auto Scan
+            </button>
+        </div>
+    </div>
+
+    <div class="web-attacks-grid">
+        <!-- SQL Injection Module -->
+        <div class="attack-module">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h3>SQL Injection</h3>
+                <div class="module-status active"></div>
+            </div>
+            <div class="module-content">
+                <div class="attack-types">
+                    <div class="attack-type" onclick="executeAttack('sqli', 'union')">
+                        <span class="attack-name">UNION-based</span>
+                        <span class="attack-success">94.7%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('sqli', 'blind')">
+                        <span class="attack-name">Blind SQLi</span>
+                        <span class="attack-success">87.3%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('sqli', 'time')">
+                        <span class="attack-name">Time-based</span>
+                        <span class="attack-success">91.2%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('sqli', 'oob')">
+                        <span class="attack-name">Out-of-Band</span>
+                        <span class="attack-success">78.9%</span>
+                    </div>
+                </div>
+                <div class="module-stats">
+                    <span>347 payloads</span>
+                    <span>23 bypasses</span>
+                    <span>12 WAF evasions</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- XSS Module -->
+        <div class="attack-module">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>Cross-Site Scripting</h3>
+                <div class="module-status active"></div>
+            </div>
+            <div class="module-content">
+                <div class="attack-types">
+                    <div class="attack-type" onclick="executeAttack('xss', 'reflected')">
+                        <span class="attack-name">Reflected XSS</span>
+                        <span class="attack-success">96.1%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('xss', 'stored')">
+                        <span class="attack-name">Stored XSS</span>
+                        <span class="attack-success">89.4%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('xss', 'dom')">
+                        <span class="attack-name">DOM-based</span>
+                        <span class="attack-success">82.7%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('xss', 'blind')">
+                        <span class="attack-name">Blind XSS</span>
+                        <span class="attack-success">74.3%</span>
+                    </div>
+                </div>
+                <div class="module-stats">
+                    <span>523 payloads</span>
+                    <span>45 bypasses</span>
+                    <span>18 encodings</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- JWT Attacks -->
+        <div class="attack-module">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h3>JWT Exploitation</h3>
+                <div class="module-status active"></div>
+            </div>
+            <div class="module-content">
+                <div class="attack-types">
+                    <div class="attack-type" onclick="executeAttack('jwt', 'none')">
+                        <span class="attack-name">None Algorithm</span>
+                        <span class="attack-success">92.8%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('jwt', 'confusion')">
+                        <span class="attack-name">Key Confusion</span>
+                        <span class="attack-success">85.6%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('jwt', 'crack')">
+                        <span class="attack-name">Secret Cracking</span>
+                        <span class="attack-success">67.9%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('jwt', 'injection')">
+                        <span class="attack-name">Header Injection</span>
+                        <span class="attack-success">79.2%</span>
+                    </div>
+                </div>
+                <div class="module-stats">
+                    <span>89 techniques</span>
+                    <span>12 algorithms</span>
+                    <span>6 libraries</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- HTTP Request Smuggling -->
+        <div class="attack-module">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h3>Request Smuggling</h3>
+                <div class="module-status active"></div>
+            </div>
+            <div class="module-content">
+                <div class="attack-types">
+                    <div class="attack-type" onclick="executeAttack('smuggling', 'cl-te')">
+                        <span class="attack-name">CL.TE</span>
+                        <span class="attack-success">88.4%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('smuggling', 'te-cl')">
+                        <span class="attack-name">TE.CL</span>
+                        <span class="attack-success">91.7%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('smuggling', 'te-te')">
+                        <span class="attack-name">TE.TE</span>
+                        <span class="attack-success">76.3%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('smuggling', 'cl-cl')">
+                        <span class="attack-name">CL.CL</span>
+                        <span class="attack-success">69.8%</span>
+                    </div>
+                </div>
+                <div class="module-stats">
+                    <span>156 payloads</span>
+                    <span>8 techniques</span>
+                    <span>23 bypasses</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- LFI/RFI -->
+        <div class="attack-module">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <h3>File Inclusion</h3>
+                <div class="module-status active"></div>
+            </div>
+            <div class="module-content">
+                <div class="attack-types">
+                    <div class="attack-type" onclick="executeAttack('inclusion', 'lfi')">
+                        <span class="attack-name">Local File Inclusion</span>
+                        <span class="attack-success">93.2%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('inclusion', 'rfi')">
+                        <span class="attack-name">Remote File Inclusion</span>
+                        <span class="attack-success">84.7%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('inclusion', 'traversal')">
+                        <span class="attack-name">Directory Traversal</span>
+                        <span class="attack-success">89.5%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('inclusion', 'wrapper')">
+                        <span class="attack-name">PHP Wrappers</span>
+                        <span class="attack-success">72.1%</span>
+                    </div>
+                </div>
+                <div class="module-stats">
+                    <span>234 payloads</span>
+                    <span>34 wrappers</span>
+                    <span>12 filters</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SSRF -->
+        <div class="attack-module">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h3>SSRF Exploitation</h3>
+                <div class="module-status active"></div>
+            </div>
+            <div class="module-content">
+                <div class="attack-types">
+                    <div class="attack-type" onclick="executeAttack('ssrf', 'internal')">
+                        <span class="attack-name">Internal Networks</span>
+                        <span class="attack-success">87.9%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('ssrf', 'cloud')">
+                        <span class="attack-name">Cloud Metadata</span>
+                        <span class="attack-success">91.3%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('ssrf', 'blind')">
+                        <span class="attack-name">Blind SSRF</span>
+                        <span class="attack-success">74.6%</span>
+                    </div>
+                    <div class="attack-type" onclick="executeAttack('ssrf', 'redirect')">
+                        <span class="attack-name">Open Redirect</span>
+                        <span class="attack-success">83.2%</span>
+                    </div>
+                </div>
+                <div class="module-stats">
+                    <span>178 payloads</span>
+                    <span>15 protocols</span>
+                    <span>8 bypasses</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Scans Panel -->
+    <div class="scans-panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-radar"></i> Active Scans</h3>
+            <div class="scan-controls">
+                <button class="control-btn" onclick="pauseAllScans()">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <button class="control-btn" onclick="stopAllScans()">
+                    <i class="fas fa-stop"></i>
+                </button>
+            </div>
+        </div>
+        <div class="scans-list" id="active-scans">
+            <div class="scan-item">
+                <div class="scan-info">
+                    <h4>webapp.target.com</h4>
+                    <p>Comprehensive vulnerability scan</p>
+                </div>
+                <div class="scan-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 67%"></div>
+                    </div>
+                    <span>67% complete</span>
+                </div>
+                <div class="scan-results">
+                    <span class="result-item critical">8 Critical</span>
+                    <span class="result-item high">23 High</span>
+                    <span class="result-item medium">45 Medium</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function executeAttack(category, type) {
+    console.log(`Executing ${category} attack: ${type}`);
+    // Show attack execution modal or redirect to detailed attack page
+}
+
+function startAutomatedScan() {
+    alert('Starting automated vulnerability scan...');
+}
+
+function pauseAllScans() {
+    alert('Pausing all active scans...');
+}
+
+function stopAllScans() {
+    alert('Stopping all active scans...');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,145 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="terminal-container">
+    <div class="terminal-header">
+        <div class="terminal-title">
+            <i class="fas fa-terminal"></i>
+            RED TEAM SHELL v2.4.1
+        </div>
+        <div class="terminal-controls">
+            <span class="control minimize"></span>
+            <span class="control maximize"></span>
+            <span class="control close"></span>
+        </div>
+    </div>
+    
+    <div class="terminal-body">
+        <div class="terminal-output" id="terminal-output">
+            <div class="terminal-line">
+                <span class="prompt">red-team@apt-command:~$</span>
+                <span class="command">Welcome to Red Team Command Terminal</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">Security Stuffers Lab - Advanced Penetration Testing Framework</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output">Type 'help' for available commands</span>
+            </div>
+        </div>
+        
+        <div class="terminal-input-line">
+            <span class="prompt">red-team@apt-command:~$</span>
+            <input type="text" id="terminal-input" class="terminal-input" autofocus>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const terminalInput = document.getElementById('terminal-input');
+const terminalOutput = document.getElementById('terminal-output');
+
+const commands = {
+    'help': `Available Commands:
+    ls                  - List directory contents
+    pwd                 - Print working directory
+    whoami              - Current user information
+    ps                  - Show running processes
+    netstat             - Network connections
+    cat README.md       - Display README file
+    clear               - Clear terminal
+    modules             - List attack modules
+    status              - Show system status`,
+    
+    'clear': 'CLEAR',
+    
+    'modules': `Attack Modules Available:
+    [1] Advanced Web Attack Vectors
+    [2] Active Directory Exploitation  
+    [3] AI/ML Adversarial Attacks
+    [4] Credential Operations
+    [5] Crypto Warfare
+    [6] Stealer Framework`,
+    
+    'status': `System Status:
+    ┌─────────────────────────────────┐
+    │ Active Attacks:     3           │
+    │ Compromised Hosts:  12          │
+    │ Data Exfiltrated:   2.4 GB      │
+    │ C2 Status:          CONNECTED   │
+    └─────────────────────────────────┘`
+};
+
+terminalInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const command = this.value.trim();
+        
+        // Add command to output
+        addTerminalLine('red-team@apt-command:~$', command, 'command');
+        
+        // Process command
+        if (command === 'clear') {
+            terminalOutput.innerHTML = '';
+        } else if (commands[command]) {
+            addTerminalLine('', commands[command], 'output');
+        } else if (command.length > 0) {
+            // Send to backend for real commands
+            executeCommand(command);
+        }
+        
+        this.value = '';
+        scrollToBottom();
+    }
+});
+
+function addTerminalLine(prompt, text, type) {
+    const line = document.createElement('div');
+    line.className = 'terminal-line';
+    
+    if (prompt) {
+        const promptSpan = document.createElement('span');
+        promptSpan.className = 'prompt';
+        promptSpan.textContent = prompt;
+        line.appendChild(promptSpan);
+    }
+    
+    const textSpan = document.createElement('span');
+    textSpan.className = type;
+    textSpan.textContent = text;
+    line.appendChild(textSpan);
+    
+    terminalOutput.appendChild(line);
+}
+
+function executeCommand(command) {
+    fetch('/api/terminal/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ command: command })
+    })
+    .then(response => response.json())
+    .then(data => {
+        addTerminalLine('', data.output, 'output');
+        scrollToBottom();
+    })
+    .catch(error => {
+        addTerminalLine('', `Error: ${error.message}`, 'error');
+        scrollToBottom();
+    });
+}
+
+function scrollToBottom() {
+    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+}
+
+// Keep focus on input
+document.addEventListener('click', function() {
+    terminalInput.focus();
+});
+</script>
+{% endblock %}

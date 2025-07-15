@@ -1,0 +1,267 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="header-content">
+            <h1>Attack Overview</h1>
+            <p>Comprehensive attack surface analysis and campaign monitoring</p>
+        </div>
+        <div class="header-status">
+            <span class="status-indicator operational"></span>
+            <span>OPERATIONAL</span>
+        </div>
+    </div>
+
+    <div class="overview-grid">
+        <!-- Real-time Attack Statistics -->
+        <div class="overview-card">
+            <div class="card-header">
+                <h3><i class="fas fa-crosshairs"></i> Live Attack Statistics</h3>
+                <div class="card-controls">
+                    <button class="control-btn" onclick="refreshStats()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="total-attacks">1,247</div>
+                    <div class="stat-label">Total Attacks</div>
+                    <div class="stat-trend up">+12%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="success-rate">94.7%</div>
+                    <div class="stat-label">Success Rate</div>
+                    <div class="stat-trend up">+3.2%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="targets-compromised">89</div>
+                    <div class="stat-label">Targets Compromised</div>
+                    <div class="stat-trend up">+8</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="data-extracted">15.7TB</div>
+                    <div class="stat-label">Data Extracted</div>
+                    <div class="stat-trend up">+2.1TB</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attack Vector Distribution -->
+        <div class="overview-card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-pie"></i> Attack Vector Distribution</h3>
+            </div>
+            <div class="attack-vectors">
+                <div class="vector-item">
+                    <div class="vector-info">
+                        <span class="vector-name">Web Application</span>
+                        <span class="vector-percentage">34.2%</span>
+                    </div>
+                    <div class="vector-bar">
+                        <div class="vector-fill" style="width: 34.2%"></div>
+                    </div>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-info">
+                        <span class="vector-name">Active Directory</span>
+                        <span class="vector-percentage">28.7%</span>
+                    </div>
+                    <div class="vector-bar">
+                        <div class="vector-fill" style="width: 28.7%"></div>
+                    </div>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-info">
+                        <span class="vector-name">Credential Stuffing</span>
+                        <span class="vector-percentage">19.3%</span>
+                    </div>
+                    <div class="vector-bar">
+                        <div class="vector-fill" style="width: 19.3%"></div>
+                    </div>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-info">
+                        <span class="vector-name">Social Engineering</span>
+                        <span class="vector-percentage">12.1%</span>
+                    </div>
+                    <div class="vector-bar">
+                        <div class="vector-fill" style="width: 12.1%"></div>
+                    </div>
+                </div>
+                <div class="vector-item">
+                    <div class="vector-info">
+                        <span class="vector-name">Physical Access</span>
+                        <span class="vector-percentage">5.7%</span>
+                    </div>
+                    <div class="vector-bar">
+                        <div class="vector-fill" style="width: 5.7%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Campaigns -->
+        <div class="overview-card">
+            <div class="card-header">
+                <h3><i class="fas fa-rocket"></i> Active Campaigns</h3>
+                <button class="primary-btn" onclick="createCampaign()">
+                    <i class="fas fa-plus"></i> New Campaign
+                </button>
+            </div>
+            <div class="campaigns-list">
+                <div class="campaign-item active">
+                    <div class="campaign-status"></div>
+                    <div class="campaign-info">
+                        <h4>Operation Shadowstrike</h4>
+                        <p>Multi-vector corporate penetration test</p>
+                        <div class="campaign-stats">
+                            <span>47 targets</span>
+                            <span>23 compromised</span>
+                            <span>8.2TB extracted</span>
+                        </div>
+                    </div>
+                    <div class="campaign-actions">
+                        <button class="action-btn" onclick="viewCampaign('shadowstrike')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" onclick="pauseCampaign('shadowstrike')">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="campaign-item">
+                    <div class="campaign-status paused"></div>
+                    <div class="campaign-info">
+                        <h4>Operation Blackout</h4>
+                        <p>Infrastructure disruption simulation</p>
+                        <div class="campaign-stats">
+                            <span>12 targets</span>
+                            <span>8 compromised</span>
+                            <span>2.1TB extracted</span>
+                        </div>
+                    </div>
+                    <div class="campaign-actions">
+                        <button class="action-btn" onclick="viewCampaign('blackout')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" onclick="resumeCampaign('blackout')">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Target Intelligence -->
+        <div class="overview-card">
+            <div class="card-header">
+                <h3><i class="fas fa-bullseye"></i> Target Intelligence</h3>
+            </div>
+            <div class="target-grid">
+                <div class="target-item high-value">
+                    <div class="target-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="target-info">
+                        <h4>corp-dc01.example.com</h4>
+                        <p>Windows Server 2019 - Domain Controller</p>
+                        <div class="target-tags">
+                            <span class="tag critical">Critical</span>
+                            <span class="tag compromised">Compromised</span>
+                        </div>
+                    </div>
+                    <div class="target-score">
+                        <span class="score-value">9.7</span>
+                        <span class="score-label">Risk Score</span>
+                    </div>
+                </div>
+                <div class="target-item">
+                    <div class="target-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="target-info">
+                        <h4>webapp.example.com</h4>
+                        <p>Apache 2.4.41 - Web Application</p>
+                        <div class="target-tags">
+                            <span class="tag high">High</span>
+                            <span class="tag vulnerable">Vulnerable</span>
+                        </div>
+                    </div>
+                    <div class="target-score">
+                        <span class="score-value">8.3</span>
+                        <span class="score-label">Risk Score</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Timeline -->
+        <div class="overview-card timeline-card">
+            <div class="card-header">
+                <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker success"></div>
+                    <div class="timeline-content">
+                        <h4>Domain Admin Privileges Obtained</h4>
+                        <p>Successfully escalated to Domain Admin on corp-dc01.example.com</p>
+                        <span class="timeline-time">2 minutes ago</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker warning"></div>
+                    <div class="timeline-content">
+                        <h4>Defense Evasion Detected</h4>
+                        <p>Anti-virus bypass successful on 15 workstations</p>
+                        <span class="timeline-time">8 minutes ago</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker info"></div>
+                    <div class="timeline-content">
+                        <h4>Credential Harvest Complete</h4>
+                        <p>Extracted 1,337 user credentials from memory dump</p>
+                        <span class="timeline-time">15 minutes ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function refreshStats() {
+    // Simulate stat refresh with animation
+    const statValues = document.querySelectorAll('.stat-value');
+    statValues.forEach(stat => {
+        stat.style.opacity = '0.5';
+        setTimeout(() => {
+            stat.style.opacity = '1';
+        }, 500);
+    });
+}
+
+function createCampaign() {
+    alert('Campaign creation interface would open here');
+}
+
+function viewCampaign(id) {
+    alert(`Viewing campaign: ${id}`);
+}
+
+function pauseCampaign(id) {
+    alert(`Pausing campaign: ${id}`);
+}
+
+function resumeCampaign(id) {
+    alert(`Resuming campaign: ${id}`);
+}
+</script>
+{% endblock %}
