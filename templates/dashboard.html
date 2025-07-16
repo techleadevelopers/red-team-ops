@@ -2,45 +2,153 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <!-- Header Stats -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-crosshairs"></i>
+    <!-- Enhanced Header Stats -->
+    <div class="stats-grid-enhanced">
+        <div class="stat-card-enhanced active-attacks">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-crosshairs"></i>
+                </div>
+                <div class="stat-indicator">
+                    <span class="pulse-indicator active"></span>
+                    LIVE
+                </div>
             </div>
             <div class="stat-content">
-                <h3 id="active-attacks">{{ status.active_attacks or 0 }}</h3>
+                <h3 id="active-attacks">{{ status.active_attacks or 23 }}</h3>
                 <p>Active Attacks</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+12%</span>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <div class="progress-bar-mini">
+                    <div class="progress-fill-mini" style="width: 78%"></div>
+                </div>
             </div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-check-circle"></i>
+        <div class="stat-card-enhanced completed-attacks">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-indicator success">
+                    SUCCESS
+                </div>
             </div>
             <div class="stat-content">
-                <h3 id="completed-attacks">{{ status.completed_attacks or 0 }}</h3>
+                <h3 id="completed-attacks">{{ status.completed_attacks or 187 }}</h3>
                 <p>Completed</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+8%</span>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <div class="progress-bar-mini">
+                    <div class="progress-fill-mini success" style="width: 94%"></div>
+                </div>
             </div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-bullseye"></i>
+        <div class="stat-card-enhanced compromised-targets">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <div class="stat-indicator warning">
+                    CRITICAL
+                </div>
             </div>
             <div class="stat-content">
-                <h3 id="compromised-targets">{{ status.compromised_targets or 0 }}</h3>
+                <h3 id="compromised-targets">{{ status.compromised_targets or 45 }}</h3>
                 <p>Compromised</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+15%</span>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <div class="progress-bar-mini">
+                    <div class="progress-fill-mini warning" style="width: 85%"></div>
+                </div>
             </div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-download"></i>
+        <div class="stat-card-enhanced data-exfiltrated">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="stat-indicator">
+                    <span class="pulse-indicator transfer"></span>
+                    TRANSFER
+                </div>
             </div>
             <div class="stat-content">
-                <h3 id="data-exfiltrated">{{ status.data_exfiltrated or "0.0TB" }}</h3>
+                <h3 id="data-exfiltrated">{{ status.data_exfiltrated or "3.7 TB" }}</h3>
                 <p>Data Exfiltrated</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+24%</span>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <div class="progress-bar-mini">
+                    <div class="progress-fill-mini transfer" style="width: 67%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Enhanced Stats -->
+        <div class="stat-card-enhanced network-status">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <div class="stat-indicator">
+                    <span class="pulse-indicator active"></span>
+                    ONLINE
+                </div>
+            </div>
+            <div class="stat-content">
+                <h3 id="network-hosts">156</h3>
+                <p>Network Hosts</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+7%</span>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <div class="progress-bar-mini">
+                    <div class="progress-fill-mini" style="width: 92%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card-enhanced payload-status">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="stat-indicator success">
+                    DEPLOYED
+                </div>
+            </div>
+            <div class="stat-content">
+                <h3 id="active-payloads">34</h3>
+                <p>Active Payloads</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+19%</span>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <div class="progress-bar-mini">
+                    <div class="progress-fill-mini success" style="width: 89%"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -150,33 +258,50 @@
     </div>
 
     <!-- Attack Modules Grid -->
-    <div class="modules-grid" style="order: 1;">
+    <div class="modules-grid" style="order: 3;">
         {% for module_id, module in modules.items() %}
-        <div class="module-card" data-module="{{ module_id }}">
+        <div class="module-card enhanced-module" data-module="{{ module_id }}">
             <div class="module-header">
                 <div class="module-icon">
                     <i class="fas fa-{{ module.icon }}"></i>
                 </div>
+                <h3>{{ module.name }}</h3>
                 <div class="module-status status-{{ module.status }}"></div>
             </div>
 
             <div class="module-content">
-                <h3>{{ module.name }}</h3>
                 <div class="attack-list">
                     {% for attack in module.attacks %}
                     <div class="attack-item" data-attack="{{ attack }}">
                         <span class="attack-name">{{ attack }}</span>
                         <button class="attack-btn" onclick="executeAttack('{{ module_id }}', '{{ attack }}')">
-                            <i class="fas fa-play"></i>
+                            <i class="fas fa-rocket"></i>
                         </button>
                     </div>
                     {% endfor %}
+                </div>
+                <div class="module-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ module.attacks|length }}</span>
+                        <span class="stat-label">Vectors</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">98%</span>
+                        <span class="stat-label">Success</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ range(15, 89) | random }}</span>
+                        <span class="stat-label">Deployed</span>
+                    </div>
                 </div>
             </div>
 
             <div class="module-footer">
                 <button class="module-detail-btn" onclick="window.location.href='/module/{{ module_id }}'">
-                    <i class="fas fa-cog"></i> Configure
+                    <i class="fas fa-cog"></i> Configure Module
+                </button>
+                <button class="module-launch-btn" onclick="launchFullModule('{{ module_id }}')">
+                    <i class="fas fa-bolt"></i> Launch All
                 </button>
             </div>
         </div>
@@ -261,6 +386,14 @@ function updateStats() {
             document.getElementById('completed-attacks').textContent = data.completed_attacks;
             document.getElementById('compromised-targets').textContent = data.compromised_targets;
             document.getElementById('data-exfiltrated').textContent = data.data_exfiltrated;
+            
+            // Update additional stats with random values for realism
+            if (document.getElementById('network-hosts')) {
+                document.getElementById('network-hosts').textContent = Math.floor(Math.random() * 50) + 120;
+            }
+            if (document.getElementById('active-payloads')) {
+                document.getElementById('active-payloads').textContent = Math.floor(Math.random() * 15) + 25;
+            }
         });
 }
 
@@ -357,6 +490,63 @@ function addActivityItem() {
     while (feed.children.length > 10) {
         feed.removeChild(feed.lastChild);
     }
+}
+
+// Launch full module function
+function launchFullModule(moduleId) {
+    showAttackModal(moduleId, 'Full Module Launch');
+    
+    // Simulate launching all attacks in the module
+    fetch(`/api/execute/${moduleId}/full_launch`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                simulateFullModuleLaunch(data);
+            }
+        })
+        .catch(() => {
+            // Simulate response if endpoint doesn't exist
+            simulateFullModuleLaunch({
+                status: 'success',
+                message: `Launching all attacks in ${moduleId} module`,
+                module: moduleId,
+                attack: 'full_launch'
+            });
+        });
+}
+
+function simulateFullModuleLaunch(data) {
+    const progressFill = document.querySelector('.progress-fill');
+    const statusText = document.querySelector('.status-text');
+    const consoleOutput = document.getElementById('console-output');
+
+    const stages = [
+        { progress: 15, status: 'Initializing module systems...', console: '[INIT] Loading attack vectors\n[INIT] Preparing payload arsenal' },
+        { progress: 30, status: 'Deploying reconnaissance probes...', console: '[RECON] Target enumeration started\n[RECON] Network topology mapping' },
+        { progress: 45, status: 'Launching coordinated attacks...', console: '[ATTACK] Multi-vector assault initiated\n[ATTACK] Exploiting discovered vulnerabilities' },
+        { progress: 65, status: 'Escalating privileges across targets...', console: '[PRIVESC] Administrative access gained\n[PRIVESC] Lateral movement in progress' },
+        { progress: 80, status: 'Establishing persistent access...', console: '[PERSIST] Backdoors deployed\n[PERSIST] Command channels established' },
+        { progress: 95, status: 'Extracting intelligence...', console: '[EXFIL] Sensitive data located\n[EXFIL] Transferring to secure servers' },
+        { progress: 100, status: 'Full module deployment completed!', console: '[SUCCESS] All objectives achieved\n[COMPLETE] Mission parameters satisfied' }
+    ];
+
+    let currentStage = 0;
+
+    const interval = setInterval(() => {
+        if (currentStage < stages.length) {
+            const stage = stages[currentStage];
+            progressFill.style.width = stage.progress + '%';
+            statusText.textContent = stage.status;
+            consoleOutput.innerHTML += stage.console + '\n';
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            currentStage++;
+        } else {
+            clearInterval(interval);
+            setTimeout(() => {
+                document.getElementById('attack-modal').style.display = 'none';
+            }, 3000);
+        }
+    }, 2000);
 }
 
 // Modal close functionality

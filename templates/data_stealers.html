@@ -1,0 +1,534 @@
+
+{% extends "base.html" %}
+
+{% block title %}Data Stealers - APT Red Team{% endblock %}
+
+{% block extra_css %}
+<style>
+.operation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.operation-card {
+    background: linear-gradient(135deg, rgba(17, 17, 17, 0.9), rgba(30, 30, 30, 0.9));
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.operation-card:hover {
+    border-color: var(--primary-red);
+    box-shadow: 0 8px 32px rgba(255, 0, 64, 0.3);
+    transform: translateY(-5px);
+}
+
+.targets-container {
+    margin: 1rem 0;
+}
+
+.target-input {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.target-input input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+}
+
+.add-target-btn, .remove-target-btn {
+    background: var(--primary-red);
+    border: none;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 40px;
+}
+
+.remove-target-btn {
+    background: #ff4444;
+}
+
+.execute-btn {
+    width: 100%;
+    background: linear-gradient(45deg, var(--primary-red), var(--secondary-red));
+    border: none;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.execute-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(255, 0, 64, 0.4);
+}
+
+.results-container {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-ready { background: var(--success-color); }
+.status-running { background: var(--warning-color); animation: pulse 1s infinite; }
+.status-error { background: var(--error-color); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-icon">
+            <i class="fas fa-database"></i>
+        </div>
+        <div class="header-content">
+            <h1>Data Stealers Framework</h1>
+            <p>Advanced data exfiltration and collection operations</p>
+        </div>
+    </div>
+
+    <div class="operation-grid">
+        <!-- File Stealer Operation -->
+        <div class="operation-card">
+            <h3><i class="fas fa-folder-open"></i> File Stealer</h3>
+            <p>Extract sensitive files from target systems</p>
+            
+            <div class="targets-container">
+                <label>Target Directories:</label>
+                <div id="file-targets">
+                    <div class="target-input">
+                        <input type="text" placeholder="/home/user/documents" value="/home/user/documents">
+                        <button class="add-target-btn" onclick="addTarget('file-targets')">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>File Types (comma-separated):</label>
+                <input type="text" id="file-types" placeholder="pdf,docx,xlsx,txt,png,jpg" value="pdf,docx,xlsx,txt">
+            </div>
+
+            <div class="form-group">
+                <label>Max File Size (MB):</label>
+                <input type="number" id="max-file-size" value="100" min="1" max="1000">
+            </div>
+
+            <button class="execute-btn" onclick="executeFileSteal()">
+                <i class="fas fa-download"></i> Execute File Stealer
+            </button>
+
+            <div id="file-stealer-results" class="results-container" style="display:none;"></div>
+        </div>
+
+        <!-- Database Extraction -->
+        <div class="operation-card">
+            <h3><i class="fas fa-server"></i> Database Extraction</h3>
+            <p>Extract data from database systems</p>
+            
+            <div class="targets-container">
+                <label>Database Targets:</label>
+                <div id="db-targets">
+                    <div class="target-input">
+                        <input type="text" placeholder="mysql://user:pass@host:3306/db" value="mysql://webapp:password@localhost:3306/users">
+                        <button class="add-target-btn" onclick="addTarget('db-targets')">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Tables to Extract:</label>
+                <input type="text" id="db-tables" placeholder="users,passwords,sessions" value="users,passwords,sessions">
+            </div>
+
+            <div class="form-group">
+                <label>Output Format:</label>
+                <select id="db-format">
+                    <option value="json">JSON</option>
+                    <option value="csv">CSV</option>
+                    <option value="sql">SQL Dump</option>
+                </select>
+            </div>
+
+            <button class="execute-btn" onclick="executeDatabaseExtraction()">
+                <i class="fas fa-database"></i> Extract Database
+            </button>
+
+            <div id="db-extraction-results" class="results-container" style="display:none;"></div>
+        </div>
+
+        <!-- Email Harvesting -->
+        <div class="operation-card">
+            <h3><i class="fas fa-envelope"></i> Email Harvesting</h3>
+            <p>Harvest emails and credentials from mail clients</p>
+            
+            <div class="targets-container">
+                <label>Email Accounts:</label>
+                <div id="email-targets">
+                    <div class="target-input">
+                        <input type="text" placeholder="user@company.com" value="admin@target.com">
+                        <button class="add-target-btn" onclick="addTarget('email-targets')">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Mail Clients:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="outlook" checked> Outlook</label>
+                    <label><input type="checkbox" value="thunderbird" checked> Thunderbird</label>
+                    <label><input type="checkbox" value="apple_mail"> Apple Mail</label>
+                    <label><input type="checkbox" value="gmail"> Gmail (Browser)</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Data Types:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="credentials" checked> Credentials</label>
+                    <label><input type="checkbox" value="contacts" checked> Contacts</label>
+                    <label><input type="checkbox" value="attachments"> Attachments</label>
+                    <label><input type="checkbox" value="calendar"> Calendar</label>
+                </div>
+            </div>
+
+            <button class="execute-btn" onclick="executeEmailHarvesting()">
+                <i class="fas fa-envelope-open"></i> Harvest Emails
+            </button>
+
+            <div id="email-harvest-results" class="results-container" style="display:none;"></div>
+        </div>
+
+        <!-- Keylogger Operation -->
+        <div class="operation-card">
+            <h3><i class="fas fa-keyboard"></i> Advanced Keylogger</h3>
+            <p>Deploy sophisticated keylogging operations</p>
+            
+            <div class="targets-container">
+                <label>Target Hosts:</label>
+                <div id="keylog-targets">
+                    <div class="target-input">
+                        <input type="text" placeholder="192.168.1.100" value="192.168.1.100">
+                        <button class="add-target-btn" onclick="addTarget('keylog-targets')">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Duration (minutes):</label>
+                <input type="number" id="keylog-duration" value="60" min="1" max="1440">
+            </div>
+
+            <div class="form-group">
+                <label>Capture Options:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="keystrokes" checked> Keystrokes</label>
+                    <label><input type="checkbox" value="mouse_clicks" checked> Mouse Clicks</label>
+                    <label><input type="checkbox" value="screenshots"> Screenshots</label>
+                    <label><input type="checkbox" value="clipboard"> Clipboard</label>
+                </div>
+            </div>
+
+            <button class="execute-btn" onclick="executeKeylogger()">
+                <i class="fas fa-bug"></i> Deploy Keylogger
+            </button>
+
+            <div id="keylogger-results" class="results-container" style="display:none;"></div>
+        </div>
+
+        <!-- Screenshot Stealer -->
+        <div class="operation-card">
+            <h3><i class="fas fa-camera"></i> Screenshot Stealer</h3>
+            <p>Capture screenshots from target systems</p>
+            
+            <div class="targets-container">
+                <label>Target Systems:</label>
+                <div id="screenshot-targets">
+                    <div class="target-input">
+                        <input type="text" placeholder="workstation01.corp.local" value="workstation01.corp.local">
+                        <button class="add-target-btn" onclick="addTarget('screenshot-targets')">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Capture Interval (seconds):</label>
+                <input type="number" id="screenshot-interval" value="30" min="5" max="300">
+            </div>
+
+            <div class="form-group">
+                <label>Total Duration (minutes):</label>
+                <input type="number" id="screenshot-duration" value="60" min="1" max="480">
+            </div>
+
+            <div class="form-group">
+                <label>Quality:</label>
+                <select id="screenshot-quality">
+                    <option value="high">High Quality</option>
+                    <option value="medium" selected>Medium Quality</option>
+                    <option value="low">Low Quality (Stealth)</option>
+                </select>
+            </div>
+
+            <button class="execute-btn" onclick="executeScreenshotStealer()">
+                <i class="fas fa-camera"></i> Start Screenshot Capture
+            </button>
+
+            <div id="screenshot-results" class="results-container" style="display:none;"></div>
+        </div>
+
+        <!-- Network Traffic Capture -->
+        <div class="operation-card">
+            <h3><i class="fas fa-network-wired"></i> Network Capture</h3>
+            <p>Intercept and analyze network communications</p>
+            
+            <div class="targets-container">
+                <label>Network Interfaces:</label>
+                <div id="network-targets">
+                    <div class="target-input">
+                        <input type="text" placeholder="eth0" value="eth0">
+                        <button class="add-target-btn" onclick="addTarget('network-targets')">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Capture Duration (minutes):</label>
+                <input type="number" id="network-duration" value="30" min="1" max="120">
+            </div>
+
+            <div class="form-group">
+                <label>Filters:</label>
+                <input type="text" id="network-filter" placeholder="tcp port 80 or tcp port 443" value="tcp port 80 or tcp port 443">
+            </div>
+
+            <div class="form-group">
+                <label>Analysis Options:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="credentials" checked> Extract Credentials</label>
+                    <label><input type="checkbox" value="emails" checked> Extract Emails</label>
+                    <label><input type="checkbox" value="files"> Extract Files</label>
+                    <label><input type="checkbox" value="dns"> DNS Queries</label>
+                </div>
+            </div>
+
+            <button class="execute-btn" onclick="executeNetworkCapture()">
+                <i class="fas fa-satellite-dish"></i> Start Network Capture
+            </button>
+
+            <div id="network-capture-results" class="results-container" style="display:none;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function addTarget(containerId) {
+    const container = document.getElementById(containerId);
+    const newInput = document.createElement('div');
+    newInput.className = 'target-input';
+    newInput.innerHTML = `
+        <input type="text" placeholder="Enter target...">
+        <button class="remove-target-btn" onclick="removeTarget(this)">-</button>
+    `;
+    container.appendChild(newInput);
+}
+
+function removeTarget(button) {
+    button.parentElement.remove();
+}
+
+function getTargets(containerId) {
+    const container = document.getElementById(containerId);
+    const inputs = container.querySelectorAll('input[type="text"]');
+    return Array.from(inputs).map(input => input.value).filter(value => value.trim() !== '');
+}
+
+function showResults(containerId, data) {
+    const container = document.getElementById(containerId);
+    container.style.display = 'block';
+    container.innerHTML = `
+        <div class="status-indicator status-running"></div>
+        <strong>Operation Status:</strong> ${data.status}<br>
+        <strong>Message:</strong> ${data.message}<br>
+        <strong>Timestamp:</strong> ${new Date().toLocaleString()}<br>
+        <pre>${JSON.stringify(data, null, 2)}</pre>
+    `;
+}
+
+async function executeFileSteal() {
+    const targets = getTargets('file-targets');
+    const fileTypes = document.getElementById('file-types').value.split(',').map(t => t.trim());
+    const maxSize = document.getElementById('max-file-size').value;
+    
+    try {
+        const response = await fetch('/api/execute-data-stealer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                operation: 'file_stealer',
+                directories: targets,
+                file_types: fileTypes,
+                max_size_mb: parseInt(maxSize)
+            })
+        });
+        
+        const result = await response.json();
+        showResults('file-stealer-results', result);
+    } catch (error) {
+        showResults('file-stealer-results', { status: 'error', message: error.message });
+    }
+}
+
+async function executeDatabaseExtraction() {
+    const targets = getTargets('db-targets');
+    const tables = document.getElementById('db-tables').value.split(',').map(t => t.trim());
+    const format = document.getElementById('db-format').value;
+    
+    try {
+        const response = await fetch('/api/execute-data-stealer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                operation: 'database_extraction',
+                databases: targets,
+                tables: tables,
+                format: format
+            })
+        });
+        
+        const result = await response.json();
+        showResults('db-extraction-results', result);
+    } catch (error) {
+        showResults('db-extraction-results', { status: 'error', message: error.message });
+    }
+}
+
+async function executeEmailHarvesting() {
+    const targets = getTargets('email-targets');
+    const clients = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+    
+    try {
+        const response = await fetch('/api/execute-data-stealer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                operation: 'email_harvesting',
+                accounts: targets,
+                clients: clients
+            })
+        });
+        
+        const result = await response.json();
+        showResults('email-harvest-results', result);
+    } catch (error) {
+        showResults('email-harvest-results', { status: 'error', message: error.message });
+    }
+}
+
+async function executeKeylogger() {
+    const targets = getTargets('keylog-targets');
+    const duration = parseInt(document.getElementById('keylog-duration').value);
+    const options = Array.from(document.querySelectorAll('#keylogger input[type="checkbox"]:checked')).map(cb => cb.value);
+    
+    try {
+        const response = await fetch('/api/execute-data-stealer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                operation: 'keylogger',
+                targets: targets,
+                duration: duration,
+                options: options
+            })
+        });
+        
+        const result = await response.json();
+        showResults('keylogger-results', result);
+    } catch (error) {
+        showResults('keylogger-results', { status: 'error', message: error.message });
+    }
+}
+
+async function executeScreenshotStealer() {
+    const targets = getTargets('screenshot-targets');
+    const interval = parseInt(document.getElementById('screenshot-interval').value);
+    const duration = parseInt(document.getElementById('screenshot-duration').value);
+    const quality = document.getElementById('screenshot-quality').value;
+    
+    try {
+        const response = await fetch('/api/execute-data-stealer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                operation: 'screenshot_stealer',
+                targets: targets,
+                interval: interval,
+                duration: duration,
+                quality: quality
+            })
+        });
+        
+        const result = await response.json();
+        showResults('screenshot-results', result);
+    } catch (error) {
+        showResults('screenshot-results', { status: 'error', message: error.message });
+    }
+}
+
+async function executeNetworkCapture() {
+    const targets = getTargets('network-targets');
+    const duration = parseInt(document.getElementById('network-duration').value);
+    const filter = document.getElementById('network-filter').value;
+    const analysis = Array.from(document.querySelectorAll('#network-capture input[type="checkbox"]:checked')).map(cb => cb.value);
+    
+    try {
+        const response = await fetch('/api/execute-data-stealer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                operation: 'network_capture',
+                interfaces: targets,
+                duration: duration,
+                filter: filter,
+                analysis: analysis
+            })
+        });
+        
+        const result = await response.json();
+        showResults('network-capture-results', result);
+    } catch (error) {
+        showResults('network-capture-results', { status: 'error', message: error.message });
+    }
+}
+</script>
+{% endblock %}

@@ -1,6 +1,6 @@
-🛡️ Security-Stuffers-Lab — APT Level Red Team Arsenal
+🛡️ Red Team Ops — APT Level Red Team Arsenal
 
-🚀 Security-Stuffers-Lab é um laboratório avançado focado em técnicas e ferramentas ofensivas usadas em cenários reais de APTs, operações de Red Teaming e Threat Emulation.
+🚀 Red Team Ops é um laboratório avançado focado em técnicas e ferramentas ofensivas usadas em cenários reais de APTs, operações de Red Teaming e Threat Emulation.
 
 Este projeto reúne explorações práticas, scripts de ataque, stealers, bruteforcers, exfiltradores stealth, e agora módulos de ataques adversariais contra Inteligência Artificial, tudo pronto para estudos, treinos e simulações de guerra cibernética realista.
 

@@ -1,4 +1,4 @@
-modules = ["python-3.12", "c-clang14", "cpp-clang14"]
+modules = ["python-3.12", "web", "nodejs-20"]
 run = "python"
 
 [nix]
@@ -8,11 +8,20 @@ channel = "stable-24_05"
 run = ["sh", "-c", "python"]
 
 [workflows]
-runButton = "Run APT Dashboard"
+runButton = "Run Frontend Only"
 
 [[workflows.workflow]]
 name = "Run APT Dashboard"
 author = 42137517
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python app.py"
+
+[[workflows.workflow]]
+name = "Run Frontend Only"
+author = 45045861
 mode = "sequential"
 
 [[workflows.workflow.tasks]]
